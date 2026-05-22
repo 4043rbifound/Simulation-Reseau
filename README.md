@@ -1,6 +1,6 @@
 # Simulation-R-seaux 
 
-Etape 1 : Niquer Amine
+Etape 1 : Niquer Amine \n
 Etape 2 : Baiser Amine
 Etape 3 : Soulever Amine
 Etape 4 : Détruire Amine
