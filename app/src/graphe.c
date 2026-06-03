@@ -1,4 +1,6 @@
 #include "reseau.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 void cree_reseau(graphe_reseau *g) {
     g->switchs = NULL;
@@ -11,13 +13,15 @@ void cree_reseau(graphe_reseau *g) {
     g->ordre = 0;
 }
 
-
-int chargeur_reseau(const char *nom_fichier, g graphe_reseau *g)
+int chargeur_reseau(const char *nom_fichier, graphe_reseau *g)
 {
-FILE *f = fopen(nom_fichier,"r");
-if(f == NULL)
-{
-    perror("erreur ouverture du fichier")
-    return 0;
-}
+    FILE *f = fopen(nom_fichier, "r");
+    if(f == NULL)
+    {
+        perror("erreur ouverture du fichier"); 
+        return 0; 
+    }
+    
+    cree_reseau(g);
+    
 }
