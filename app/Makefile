@@ -1,38 +1,35 @@
-# Nom du programme final généré dans /bin
-TARGET_EXEC ?= simulateur_reseau
+# Nom des programmes
+TARGET_STP = ./bin/simulateur_stp
+TARGET_SANS_STP = ./bin/simulateur_sans_stp
 
-# Dossiers pour organiser le projet
-BUILD_DIR ?= ./build
-TARGET_DIR ?= ./bin
-SRC_DIRS ?= ./src
+# Dossiers
+BUILD_DIR = ./build
+TARGET_DIR = ./bin
+SRC_DIRS = ./src
 
-# Trouve automatiquement tous les fichiers .c dans le dossier ./src
-SRCS := $(shell find $(SRC_DIRS) -name "*.c")
-OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
-DEPS := $(OBJS:.o=.d)
+# Flags
+INC_FLAGS = -I$(SRC_DIRS)
+CFLAGS = $(INC_FLAGS) -g -Wall -Wextra -Wno-unused-parameter
 
-# Inclusion des fichiers .h
-INC_DIRS := $(shell find $(SRC_DIRS) -type d)
-INC_FLAGS := $(addprefix -I,$(INC_DIRS))
+# Cibles principales
+all: $(TARGET_STP) $(TARGET_SANS_STP)
 
-# Options de compilation : Wall/Wextra pour les avertissements, -g pour le débuggage (Valgrind/GDB)
-CFLAGS ?= $(INC_FLAGS) -MMD -MP -g -Wall -Wextra -Wno-unused-parameter
+# Compilation de l'exécutable STP
+$(TARGET_STP): $(BUILD_DIR)/graphe.o $(BUILD_DIR)/reseau.o $(BUILD_DIR)/main_stp.o
+	mkdir -p $(TARGET_DIR)
+	$(CC) $^ -o $@
 
-# Règle principale : compilation de l'exécutable final
-$(TARGET_DIR)/$(TARGET_EXEC): $(OBJS)
-	mkdir -p $(dir $@)
-	$(CC) $(OBJS) -o $@ $(LDFLAGS)
+# Compilation de l'exécutable SANS STP
+$(TARGET_SANS_STP): $(BUILD_DIR)/graphe.o $(BUILD_DIR)/reseau.o $(BUILD_DIR)/main_sans_stp.o
+	mkdir -p $(TARGET_DIR)
+	$(CC) $^ -o $@
 
-# Règle pour compiler chaque fichier .c en fichier objet .o
-$(BUILD_DIR)/%.c.o: %.c
-	mkdir -p $(dir $@)
+# Règle générique pour compiler chaque fichier .c en fichier objet .o
+$(BUILD_DIR)/%.o: $(SRC_DIRS)/%.c
+	mkdir -p $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Cibles "virtuelles"
+# Nettoyage
 .PHONY: clean
-
-# Nettoyage des dossiers temporaires build/ et bin/
 clean:
 	rm -rf $(BUILD_DIR) $(TARGET_DIR)
-
--include $(DEPS)
